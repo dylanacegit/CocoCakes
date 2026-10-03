@@ -19,9 +19,11 @@
                             <th>Customer</th>
                             <th>Product</th>
                             <th>Pet</th>
+                            <th>Flavor</th>
+                            <th>Size</th>
                             <th>Pickup date</th>
                             <th>Instructions</th>
-                            <th>Status</th>
+                            <!-- <th>Status</th> -->
                         </tr>
                     </thead>
                     <tbody>
@@ -33,13 +35,15 @@
                                     {{ $order->pet?->name ?? $order->pet_name }}
                                     — {{ $order->pet?->type ?? $order->pet_type }}
                                 </td>
+                                <td>{{ $order->flavor ?: '—' }}</td>
+                                <td>{{ $order->size ?: '—' }}</td>
                                 <td>{{ $order->pickup_date->format('M d, Y') }}</td>
                                 <td>{{ $order->special_instructions }}</td>
-                                <td><span class="status-badge">{{ ucfirst($order->status) }}</span></td>
+                                <!--<td><span class="status-badge">{{ ucfirst($order->status) }}</span></td>-->
                             </tr>
                         @empty
                             <tr>
-                                <td class="admin-empty" colspan="6">No orders found.</td>
+                                <td class="admin-empty" colspan="8">No orders found.</td>
                             </tr>
                         @endforelse
                     </tbody>

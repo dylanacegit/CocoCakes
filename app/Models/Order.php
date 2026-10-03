@@ -14,6 +14,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'email',
     'pet_name',
     'pet_type',
+    'flavor',
+    'size',
     'pickup_date',
     'special_instructions',
     'status',

@@ -23,7 +23,8 @@
                     <div>
                         <label for="type">Pet type</label>
                         <select id="type" name="type" required>
-                            <option value="">Choose a type</option>                            @foreach (['Dog', 'Cat', 'Rabbit', 'Other'] as $type)
+                            <option value="">Choose a type</option>                            
+                            @foreach (['Dog', 'Cat', 'Rabbit', 'Other'] as $type)
                                 <option value="{{ $type }}" @selected(old('type') === $type)>{{ $type }}</option>
                             @endforeach
                         </select>

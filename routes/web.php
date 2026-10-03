@@ -59,6 +59,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/my-pets', [PetController::class, 'store'])
         ->name('customer.pets.store');
 
+    Route::get('/my-pets/{pet}/edit', [PetController::class, 'edit'])
+        ->name('customer.pets.edit');
+
+    Route::put('/my-pets/{pet}', [PetController::class, 'update'])
+        ->name('customer.pets.update');
+
     Route::get('/profile', [ProfileController::class, 'edit'])
         ->name('profile.edit');
 
@@ -77,7 +83,7 @@ Route::middleware(['auth', 'admin'])
     ->name('admin.')
     ->group(function () {
         Route::resource('products', ProductController::class)
-            ->only(['index', 'create', 'store']);
+            ->only(['index', 'create', 'store', 'edit', 'update']);
 
         Route::get('/orders', [OrderController::class, 'index'])
             ->name('orders.index');

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pet;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
 class PetController extends Controller
@@ -37,5 +39,33 @@ class PetController extends Controller
 
         return to_route('customer.pets')
             ->with('success', 'Pet added successfully.');
+    }
+
+    // Show the form for editing the specified pet
+    public function edit(Pet $pet): View
+    {
+        Gate::authorize('update', $pet);
+
+        return view('customer.edit-pet', [
+            'pet' => $pet,
+        ]);
+    }
+
+    // Update the specified pet in storage
+    public function update(Request $request, Pet $pet): RedirectResponse
+    {
+        Gate::authorize('update', $pet);
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:100'],
+            'type' => ['required', 'string', 'max:100'],
+            'breed' => ['required', 'string', 'max:100'],
+            'age' => ['required', 'integer', 'min:0', 'max:50'],
+        ]);
+
+        $pet->update($validated);
+
+        return to_route('customer.pets')
+            ->with('success', 'Pet updated successfully.');
     }
 }

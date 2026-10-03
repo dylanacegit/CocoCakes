@@ -26,7 +26,7 @@ class OrderPetSelectionTest extends TestCase
 
     public function test_user_can_create_an_order_for_their_pet(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['name' => 'Dylan Garcia']);
         $pet = Pet::factory()->for($user)->create([
             'name' => 'Prada',
             'type' => 'Dog',
@@ -37,8 +37,9 @@ class OrderPetSelectionTest extends TestCase
             ->post(route('order.store'), [
                 'product_id' => $product->id,
                 'pet_id' => $pet->id,
-                'customer_name' => 'Dylan',
                 'email' => 'dylan@example.com',
+                'flavor' => 'Vanilla',
+                'size' => '4-inch',
                 'pickup_date' => now()->addDay()->toDateString(),
                 'special_instructions' => 'Blue frosting.',
             ])
@@ -49,8 +50,11 @@ class OrderPetSelectionTest extends TestCase
             'user_id' => $user->id,
             'product_id' => $product->id,
             'pet_id' => $pet->id,
+            'customer_name' => 'Dylan Garcia',
             'pet_name' => 'Prada',
             'pet_type' => 'Dog',
+            'flavor' => 'Vanilla',
+            'size' => '4-inch',
         ]);
     }
 
@@ -66,9 +70,32 @@ class OrderPetSelectionTest extends TestCase
                 'pet_id' => $otherPet->id,
                 'customer_name' => 'Dylan',
                 'email' => 'dylan@example.com',
+                'flavor' => 'Vanilla',
+                'size' => '4-inch',
                 'pickup_date' => now()->addDay()->toDateString(),
             ])
             ->assertSessionHasErrors('pet_id');
+
+        $this->assertDatabaseCount('orders', 0);
+    }
+
+    public function test_order_rejects_a_flavor_not_available_for_the_product(): void
+    {
+        $user = User::factory()->create();
+        $pet = Pet::factory()->for($user)->create();
+        $product = $this->createProduct($user);
+
+        $this->actingAs($user)
+            ->post(route('order.store'), [
+                'product_id' => $product->id,
+                'pet_id' => $pet->id,
+                'customer_name' => 'Dylan',
+                'email' => 'dylan@example.com',
+                'flavor' => 'Strawberry',
+                'size' => '4-inch',
+                'pickup_date' => now()->addDay()->toDateString(),
+            ])
+            ->assertSessionHasErrors('flavor');
 
         $this->assertDatabaseCount('orders', 0);
     }
@@ -79,7 +106,10 @@ class OrderPetSelectionTest extends TestCase
             'name' => 'Birthday Cake',
             'slug' => 'birthday-cake',
             'description' => 'A custom birthday cake.',
-            'options' => [],
+            'options' => [
+                'flavors' => ['Vanilla', 'Chocolate'],
+                'sizes' => ['4-inch', '6-inch'],
+            ],
         ]);
     }
 }

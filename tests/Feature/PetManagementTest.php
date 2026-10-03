@@ -60,4 +60,56 @@ class PetManagementTest extends TestCase
             ->post(route('customer.pets.store'), [])
             ->assertSessionHasErrors(['name', 'type', 'breed', 'age']);
     }
+
+    public function test_user_can_edit_their_pet(): void
+    {
+        $user = User::factory()->create();
+        $pet = Pet::factory()->for($user)->create();
+
+        $this->actingAs($user)
+            ->get(route('customer.pets.edit', $pet))
+            ->assertOk()
+            ->assertSee($pet->name);
+
+        $this->actingAs($user)
+            ->put(route('customer.pets.update', $pet), [
+                'name' => 'Coco',
+                'type' => 'Dog',
+                'breed' => 'Poodle',
+                'age' => 5,
+            ])
+            ->assertRedirect(route('customer.pets'))
+            ->assertSessionHas('success');
+
+        $this->assertDatabaseHas('pets', [
+            'id' => $pet->id,
+            'name' => 'Coco',
+            'breed' => 'Poodle',
+            'age' => 5,
+        ]);
+    }
+
+    public function test_user_cannot_edit_another_users_pet(): void
+    {
+        $user = User::factory()->create();
+        $otherPet = Pet::factory()->create();
+
+        $this->actingAs($user)
+            ->get(route('customer.pets.edit', $otherPet))
+            ->assertForbidden();
+
+        $this->actingAs($user)
+            ->put(route('customer.pets.update', $otherPet), [
+                'name' => 'Changed',
+                'type' => 'Dog',
+                'breed' => 'Poodle',
+                'age' => 5,
+            ])
+            ->assertForbidden();
+
+        $this->assertDatabaseMissing('pets', [
+            'id' => $otherPet->id,
+            'name' => 'Changed',
+        ]);
+    }
 }

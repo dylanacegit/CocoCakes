@@ -25,14 +25,23 @@
                         {{ $product->description }}
                     </p>
 
-                    <h2 class="h4 mt-4">Available options</h2>
+                    <h2 class="h4 mt-4">Available flavors</h2>
 
                     <ul class="list-group list-group-flush mb-4">
-                
-                        @foreach ($product->options ?? [] as $option)
+                        @forelse ($product->options['flavors'] ?? [] as $flavor)
                             <li class="list-group-item bg-transparent">
-                                {{ $option }}
+                                {{ $flavor }}
                             </li>
+                        @empty
+                            <li class="list-group-item bg-transparent">Ask us about available flavors.</li>
+                        @endforelse
+                    </ul>
+
+                    <h2 class="h4 mt-4">Available sizes</h2>
+
+                    <ul class="list-group list-group-flush mb-4">
+                        @foreach ($product->options['sizes'] ?? [] as $size)
+                            <li class="list-group-item bg-transparent">{{ $size }}</li>
                         @endforeach
                     </ul>
 

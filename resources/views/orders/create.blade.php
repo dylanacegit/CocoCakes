@@ -20,12 +20,8 @@
 
                 <div class="form-grid">
                     <div>
-                        <label for="customer_name">Your name</label>
-                        <input id="customer_name" name="customer_name" type="text"
-                            value="{{ old('customer_name', auth()->user()->name) }}" required>
-                        @error('customer_name')
-                            <p class="form-error">{{ $message }}</p>
-                        @enderror
+                        <span class="form-label">Full name</span>
+                        <p class="form-fixed-value">{{ auth()->user()->name }}</p>
                     </div>
 
                     <div>
@@ -41,7 +37,6 @@
                         <label for="pet_id">Pet</label>
                         <select id="pet_id" name="pet_id" required>
                             <option value="">Choose your pet</option>
-                            // Loop through the pets and create an option for each one
                             @foreach ($pets as $pet)
                                 <option value="{{ $pet->id }}" @selected((string) old('pet_id') === (string) $pet->id)>
                                     {{ $pet->name }} — {{ $pet->type }}, {{ $pet->breed }}
@@ -73,6 +68,26 @@
                         @enderror
                     </div>
 
+                    <div>
+                        <label for="flavor">Flavor</label>
+                        <select id="flavor" name="flavor" data-old-value="{{ old('flavor') }}" required>
+                            <option value="">Choose a product first</option>
+                        </select>
+                        @error('flavor')
+                            <p class="form-error">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label for="size">Cake size</label>
+                        <select id="size" name="size" data-old-value="{{ old('size') }}" required>
+                            <option value="">Choose a product first</option>
+                        </select>
+                        @error('size')
+                            <p class="form-error">{{ $message }}</p>
+                        @enderror
+                    </div>
+
                     <div class="form-field-wide">
                         <label for="pickup_date">Preferred pickup date</label>
                         <input id="pickup_date" name="pickup_date" type="date" value="{{ old('pickup_date') }}"
@@ -97,3 +112,35 @@
         </div>
     </section>
 @endsection
+
+@push('scripts')
+    <script>
+        const productOptions = {{ Illuminate\Support\Js::from($productOptions) }};
+        const productSelect = document.getElementById('product_id');
+        const flavorSelect = document.getElementById('flavor');
+        const sizeSelect = document.getElementById('size');
+
+        function fillSelect(select, values, placeholder) {
+            const previousValue = select.dataset.oldValue || select.value;
+
+            select.replaceChildren(new Option(placeholder, ''));
+
+            values.forEach((value) => {
+                select.add(new Option(value, value, false, value === previousValue));
+            });
+
+            select.dataset.oldValue = '';
+            select.disabled = values.length === 0;
+        }
+
+        function updateProductOptions() {
+            const options = productOptions[productSelect.value] ?? {};
+
+            fillSelect(flavorSelect, options.flavors ?? [], 'Choose a flavor');
+            fillSelect(sizeSelect, options.sizes ?? [], 'Choose a size');
+        }
+
+        productSelect.addEventListener('change', updateProductOptions);
+        updateProductOptions();
+    </script>
+@endpush

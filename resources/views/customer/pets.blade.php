@@ -25,6 +25,7 @@
                             <th>Type</th>
                             <th>Breed</th>
                             <th>Age</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -34,10 +35,16 @@
                                 <td>{{ $pet->type }}</td>
                                 <td>{{ $pet->breed }}</td>
                                 <td>{{ $pet->age }}</td>
+                                <td>
+                                    <a class="btn order-button py-2 px-3"
+                                        href="{{ route('customer.pets.edit', $pet) }}">
+                                        Edit
+                                    </a>
+                                </td>
                             </tr>
                         @empty
                             <tr>
-                                <td class="admin-empty" colspan="4">You have not added a pet yet.</td>
+                                <td class="admin-empty" colspan="5">You have not added a pet yet.</td>
                             </tr>
                         @endforelse
                     </tbody>

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\View\View;
 use App\Models\Product;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class PageController extends Controller
 {
@@ -12,10 +14,23 @@ class PageController extends Controller
         return view('pages.home');
     }
 
-    public function menu(): View
+    public function menu(Request $request): View
     {
+        $searchQuery = $request->query('search', '');
+        $search = is_string($searchQuery)
+            ? str($searchQuery)->trim()->limit(100, '')->toString()
+            : '';
+
         return view('pages.menu', [
-            'products' => Product::orderBy('name')->get(),
+            'products' => Product::query()
+                ->when(
+                    $search !== '',
+                    fn(Builder $query): Builder => $query->whereLike('name', "%{$search}%")
+                )
+                ->orderBy('name')
+                ->paginate(3)
+                ->appends($search !== '' ? ['search' => $search] : []),
+            'search' => $search,
         ]);
     }
 
@@ -28,13 +43,14 @@ class PageController extends Controller
 
     public function about(): View
     {
-        return view('pages.about',);
+        return view('pages.about');
     }
 
     public function contact(): View
     {
         return view('pages.contact');
     }
+
     public function user(): View
     {
         return view('pages.user', [

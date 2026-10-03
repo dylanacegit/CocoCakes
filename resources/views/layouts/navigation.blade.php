@@ -1,6 +1,6 @@
-<nav class="navbar navbar-expand-xl site-navbar shadow-sm" data-bs-theme="light">
-    <div class="container py-3">
-        <a class="navbar-brand brand" href="{{ route('home') }}">
+<nav class="navbar navbar-expand-xl site-navbar" data-bs-theme="light">
+    <div class="container py-2 py-xl-3">
+        <a class="navbar-brand brand me-xl-4" href="{{ route('home') }}">
             Coco Cakes
         </a>
 
@@ -14,7 +14,7 @@
         </button>
 
         <div class="collapse navbar-collapse" id="mainNavigation">
-            <ul class="navbar-nav main-navigation mx-auto align-items-xl-center">
+            <ul class="navbar-nav main-navigation me-auto align-items-xl-center">
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}"
                         href="{{ route('home') }}">
@@ -44,11 +44,29 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link order-nav-link {{ request()->routeIs('order.*') ? 'active' : '' }}"
+                    <a class="nav-link {{ request()->routeIs('order.*') ? 'active' : '' }}"
                         href="{{ route('order.create') }}">
                         Order
                     </a>
                 </li>
+            </ul>
+
+            <ul class="navbar-nav authentication-navigation ms-xl-auto align-items-xl-center gap-xl-2">
+                @guest
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('login') }}">
+                            Log in
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="btn register-button"
+                            href="{{ route('register') }}">
+                            Register
+                        </a>
+                    </li>
+                @endguest
+
                 @auth
                     @if (Auth::user()->role === 'admin')
                         <li class="nav-item">
@@ -67,7 +85,7 @@
                     @endif
 
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle
+                        <a class="nav-link
                             {{ request()->routeIs('customer.*') ? 'active' : '' }}"
                             href="#"
                             role="button"
@@ -95,24 +113,7 @@
                         </ul>
                     </li>
                 @endauth            
-            </ul>
 
-            
-            <ul class="navbar-nav authentication-navigation align-items-xl-center">
-                @guest
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('login') }}">
-                            Log in
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="btn register-button ms-xl-2"
-                            href="{{ route('register') }}">
-                            Register
-                        </a>
-                    </li>
-                @endguest
 
                 @auth
                     <li class="nav-item dropdown">

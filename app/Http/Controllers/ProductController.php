@@ -6,6 +6,7 @@ use App\Models\Product;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class ProductController extends Controller
@@ -34,8 +35,11 @@ class ProductController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string', 'min:10'],
             'image' => ['nullable', 'string', 'max:255'],
-            'options' => ['nullable', 'array'],
-            'options.*' => ['nullable', 'string', 'max:255'],
+            'flavors' => ['required', 'array'],
+            'flavors.0' => ['required', 'string', 'max:100'],
+            'flavors.*' => ['nullable', 'string', 'max:100'],
+            'sizes' => ['required', 'array', 'size:2'],
+            'sizes.*' => ['required', 'distinct', Rule::in(['4-inch', '6-inch'])],
         ]);
 
         // Generate a unique slug for the product
@@ -50,9 +54,12 @@ class ProductController extends Controller
 
         $validated['slug'] = $slug;
 
-        $validated['options'] = array_values(
-            array_filter($validated['options'] ?? [])
-        );
+        $validated['options'] = [
+            'flavors' => array_values(array_filter($validated['flavors'])),
+            'sizes' => array_values($validated['sizes']),
+        ];
+
+        unset($validated['flavors'], $validated['sizes']);
 
         $request->user()
             ->products()
@@ -61,5 +68,44 @@ class ProductController extends Controller
         // Redirect to the product index page with a success message
         return to_route('admin.products.index')
             ->with('success', 'Product added successfully.');
+    }
+
+    public function edit(Product $product): View
+    {
+        return view('admin.products.edit', [
+            'product' => $product,
+        ]);
+    }
+
+    public function update(Request $request, Product $product): RedirectResponse
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'description' => ['required', 'string', 'min:10'],
+            'image' => ['nullable', 'string', 'max:255'],
+            'flavors' => ['required', 'array'],
+            'flavors.0' => ['required', 'string', 'max:100'],
+            'flavors.*' => ['nullable', 'string', 'max:100'],
+            'sizes' => ['required', 'array', 'size:2'],
+            'sizes.*' => [
+                'required',
+                'distinct',
+                Rule::in(['4-inch', '6-inch']),
+            ],
+        ]);
+
+        $validated['options'] = [
+            'flavors' => array_values(
+                array_filter($validated['flavors'])
+            ),
+            'sizes' => array_values($validated['sizes']),
+        ];
+
+        unset($validated['flavors'], $validated['sizes']);
+
+        $product->update($validated);
+
+        return to_route('admin.products.index')
+            ->with('success', 'Product updated successfully.');
     }
 }

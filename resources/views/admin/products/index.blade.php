@@ -23,8 +23,11 @@
                         <tr>
                             <th>Name</th>
                             <th>Description</th>
+                            <th>Flavors</th>
+                            <th>Sizes</th>
                             <th>Added by</th>
                             <th>Created</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -32,12 +35,20 @@
                             <tr>
                                 <td class="fw-semibold">{{ $product->name }}</td>
                                 <td>{{ $product->description }}</td>
+                                <td>{{ implode(', ', $product->options['flavors'] ?? []) ?: '—' }}</td>
+                                <td>{{ implode(', ', $product->options['sizes'] ?? []) ?: '—' }}</td>
                                 <td>{{ $product->user->name }}</td>
                                 <td>{{ $product->created_at->format('M d, Y') }}</td>
+                                <td>
+                                    <a class="admin-secondary-link"
+                                        href="{{ route('admin.products.edit', $product) }}">
+                                        Edit
+                                    </a>
+                                </td>
                             </tr>
                         @empty
                             <tr>
-                                <td class="admin-empty" colspan="4">No products found.</td>
+                                <td class="admin-empty" colspan="7">No products found.</td>
                             </tr>
                         @endforelse
                     </tbody>
