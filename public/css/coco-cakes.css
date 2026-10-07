@@ -660,6 +660,15 @@ main {
     color: #385234;
 }
 
+.error-message {
+    margin-bottom: 24px;
+    padding: 14px 16px;
+    border: 1px solid #efc0b5;
+    border-radius: 10px;
+    background: #fff0ec;
+    color: #853f32;
+}
+
 .order-submit {
     justify-self: start;
 }
@@ -745,6 +754,120 @@ main {
     display: flex;
     align-items: center;
     gap: 18px;
+}
+
+.admin-toolbar-actions,
+.admin-row-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+.admin-toolbar-button,
+.admin-action-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-style: solid;
+    font-weight: 700;
+    line-height: 1.2;
+    text-decoration: none;
+    transition: background 180ms ease, border-color 180ms ease, box-shadow 180ms ease,
+        color 180ms ease, transform 180ms ease;
+}
+
+.admin-toolbar-button {
+    min-height: 44px;
+    padding: 9px 18px;
+    border-width: 1px;
+    border-color: #cdd5bf;
+    border-radius: 999px;
+    background: #f7f8f3;
+    color: var(--sage-dark);
+}
+
+.admin-toolbar-button:hover,
+.admin-toolbar-button:focus-visible {
+    border-color: var(--sage);
+    background: #eef1e7;
+    color: var(--brown);
+    transform: translateY(-1px);
+}
+
+.admin-toolbar-primary {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+}
+
+.admin-row-actions {
+    flex-wrap: nowrap;
+}
+
+.admin-action-form {
+    margin: 0;
+}
+
+.admin-action-button {
+    min-height: 36px;
+    padding: 7px 13px;
+    border-width: 1px;
+    border-radius: 999px;
+    font-size: 0.84rem;
+    white-space: nowrap;
+}
+
+.admin-action-edit,
+.admin-action-restore {
+    border-color: #cdd5bf;
+    background: #eef1e7;
+    color: var(--sage-dark);
+}
+
+.admin-action-delete {
+    border-color: #efc0b5;
+    background: #fff4f1;
+    color: #91493b;
+}
+
+.admin-action-permanent {
+    border-color: #91493b;
+    background: #91493b;
+    color: var(--white);
+}
+
+.admin-action-edit:hover,
+.admin-action-edit:focus-visible,
+.admin-action-restore:hover,
+.admin-action-restore:focus-visible {
+    border-color: var(--sage-dark);
+    background: var(--sage-dark);
+    color: var(--white);
+    transform: translateY(-1px);
+}
+
+.admin-action-delete:hover,
+.admin-action-delete:focus-visible {
+    border-color: #d99c8f;
+    background: #f8ddd6;
+    color: #71382e;
+    transform: translateY(-1px);
+}
+
+.admin-action-permanent:hover,
+.admin-action-permanent:focus-visible {
+    border-color: #71382e;
+    background: #71382e;
+    color: var(--white);
+    transform: translateY(-1px);
+}
+
+.admin-toolbar-button:focus-visible,
+.admin-action-button:focus-visible {
+    outline: 3px solid rgba(135, 150, 106, 0.28);
+    outline-offset: 2px;
+    box-shadow: none;
 }
 
 .admin-secondary-link {

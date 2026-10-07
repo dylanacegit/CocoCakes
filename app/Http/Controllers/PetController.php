@@ -13,7 +13,7 @@ class PetController extends Controller
     public function index(Request $request): View
     {
         return view('customer.pets', [
-            'pets' => $request->user()->pets()->orderBy('name')->get(),
+            'pets' => $request->user()->pets()->orderBy('name')->paginate(5),
         ]);
     }
 

@@ -50,6 +50,12 @@
                     </tbody>
                 </table>
             </div>
+
+            @if ($pets->hasPages())
+                <div class="menu-pagination">
+                    {{ $pets->onEachSide(1)->links() }}
+                </div>
+            @endif
         </div>
     </section>
 @endsection

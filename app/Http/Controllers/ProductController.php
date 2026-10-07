@@ -15,7 +15,7 @@ class ProductController extends Controller
     {
         $products = Product::with('user')
             ->latest()
-            ->get();
+            ->paginate(5);
 
         return view('admin.products.index', [
             'products' => $products,
@@ -48,7 +48,7 @@ class ProductController extends Controller
         $suffix = 2;
 
         while (Product::withTrashed()->where('slug', $slug)->exists()) {
-            $slug = $baseSlug . '-' . $suffix;
+            $slug = $baseSlug.'-'.$suffix;
             $suffix++;
         }
 
@@ -107,5 +107,50 @@ class ProductController extends Controller
 
         return to_route('admin.products.index')
             ->with('success', 'Product updated successfully.');
+    }
+
+    public function destroy(Product $product): RedirectResponse
+    {
+        $product->delete();
+
+        return to_route('admin.products.index')
+            ->with('success', 'Product moved to trash successfully.');
+    }
+
+    public function trash(): View
+    {
+        $products = Product::onlyTrashed()
+            ->with('user')
+            ->latest('deleted_at')
+            ->paginate(5);
+
+        return view('admin.products.trash', [
+            'products' => $products,
+        ]);
+    }
+
+    public function restore(Product $product): RedirectResponse
+    {
+        abort_unless($product->trashed(), 404);
+
+        $product->restore();
+
+        return to_route('admin.products.trash')
+            ->with('success', 'Product restored successfully.');
+    }
+
+    public function forceDelete(Product $product): RedirectResponse
+    {
+        abort_unless($product->trashed(), 404);
+
+        if ($product->orders()->exists()) {
+            return to_route('admin.products.trash')
+                ->with('error', 'This product cannot be permanently deleted because it has cake requests.');
+        }
+
+        $product->forceDelete();
+
+        return to_route('admin.products.trash')
+            ->with('success', 'Product permanently deleted.');
     }
 }

@@ -77,7 +77,7 @@
                                 </p>
 
                                 <a class="btn menu-card-button mt-auto"
-                                    href="{{ route('menu.show', $product) }}">
+                                    href="{{ route('menu.show', ['product' => $product->slug]) }}">
                                     View cake
                                     <svg aria-hidden="true" viewBox="0 0 24 24">
                                         <path d="m13.2 5.8 6.2 6.2-6.2 6.2-1.4-1.4 3.8-3.8H4.5v-2h11.1l-3.8-3.8 1.4-1.4Z"/>

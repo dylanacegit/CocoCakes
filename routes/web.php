@@ -18,9 +18,6 @@ Route::get('/', [PageController::class, 'home'])
 Route::get('/menu', [PageController::class, 'menu'])
     ->name('menu');
 
-Route::get('/menu/{product:slug}', [PageController::class, 'show'])
-    ->name('menu.show');
-
 Route::get('/about', [PageController::class, 'about'])
     ->name('about');
 
@@ -37,6 +34,20 @@ Route::middleware('auth')->group(function () {
             ? to_route('admin.products.index')
             : to_route('customer.requests');
     })->name('dashboard');
+
+    Route::get('/profile', [ProfileController::class, 'edit'])
+        ->name('profile.edit');
+
+    Route::patch('/profile', [ProfileController::class, 'update'])
+        ->name('profile.update');
+
+    Route::delete('/profile', [ProfileController::class, 'destroy'])
+        ->name('profile.destroy');
+});
+
+Route::middleware(['auth', 'user'])->group(function () {
+    Route::get('/menu/{product:slug}', [PageController::class, 'show'])
+        ->name('menu.show');
 
     Route::get('/order', [OrderController::class, 'create'])
         ->name('order.create');
@@ -64,15 +75,6 @@ Route::middleware('auth')->group(function () {
 
     Route::put('/my-pets/{pet}', [PetController::class, 'update'])
         ->name('customer.pets.update');
-
-    Route::get('/profile', [ProfileController::class, 'edit'])
-        ->name('profile.edit');
-
-    Route::patch('/profile', [ProfileController::class, 'update'])
-        ->name('profile.update');
-
-    Route::delete('/profile', [ProfileController::class, 'destroy'])
-        ->name('profile.destroy');
 });
 
 /*
@@ -82,11 +84,22 @@ Route::middleware(['auth', 'admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
+        Route::get('/products/trash', [ProductController::class, 'trash'])
+            ->name('products.trash');
+
+        Route::patch('/products/{product}/restore', [ProductController::class, 'restore'])
+            ->withTrashed()
+            ->name('products.restore');
+
+        Route::delete('/products/{product}/force-delete', [ProductController::class, 'forceDelete'])
+            ->withTrashed()
+            ->name('products.force-delete');
+
         Route::resource('products', ProductController::class)
-            ->only(['index', 'create', 'store', 'edit', 'update']);
+            ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
 
         Route::get('/orders', [OrderController::class, 'index'])
             ->name('orders.index');
     });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

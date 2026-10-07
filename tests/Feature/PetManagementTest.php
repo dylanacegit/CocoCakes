@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Pet;
 use App\Models\User;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Tests\TestCase;
 
@@ -27,6 +28,22 @@ class PetManagementTest extends TestCase
             ->get(route('customer.pets'))
             ->assertSee($ownPet->name)
             ->assertDontSee($otherPet->name);
+    }
+
+    public function test_my_pets_paginates_five_pets_at_a_time(): void
+    {
+        $user = User::factory()->create();
+        Pet::factory()->count(6)->for($user)->create();
+
+        $this->actingAs($user)
+            ->get(route('customer.pets'))
+            ->assertSee('page=2', false)
+            ->assertViewHas(
+                'pets',
+                fn (LengthAwarePaginator $pets): bool => $pets->total() === 6
+                    && $pets->count() === 5
+                    && $pets->perPage() === 5
+            );
     }
 
     public function test_user_can_add_a_pet(): void

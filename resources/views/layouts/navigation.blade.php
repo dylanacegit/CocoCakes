@@ -43,12 +43,14 @@
                     </a>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('order.*') ? 'active' : '' }}"
-                        href="{{ route('order.create') }}">
-                        Order
-                    </a>
-                </li>
+                @if (! auth()->check() || auth()->user()->role === 'user')
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('order.*') ? 'active' : '' }}"
+                            href="{{ route('order.create') }}">
+                            Order
+                        </a>
+                    </li>
+                @endif
             </ul>
 
             <ul class="navbar-nav authentication-navigation ms-xl-auto align-items-xl-center gap-xl-2">
@@ -84,34 +86,36 @@
                         </li>
                     @endif
 
-                    <li class="nav-item dropdown">
-                        <a class="nav-link
-                            {{ request()->routeIs('customer.*') ? 'active' : '' }}"
-                            href="#"
-                            role="button"
-                            data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                            My Account
-                        </a>
+                    @if (Auth::user()->role === 'user')
+                        <li class="nav-item dropdown">
+                            <a class="nav-link
+                                {{ request()->routeIs('customer.*') ? 'active' : '' }}"
+                                href="#"
+                                role="button"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                My Account
+                            </a>
 
-                        <ul class="dropdown-menu shadow-sm">
-                            <li>
-                                <a class="dropdown-item" href="{{ route('customer.requests') }}">
-                                    My Cake Requests
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="{{ route('customer.favorites') }}">
-                                    Saved Cakes
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="{{ route('customer.pets') }}">
-                                    My Pets
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                            <ul class="dropdown-menu shadow-sm">
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('customer.requests') }}">
+                                        My Cake Requests
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('customer.favorites') }}">
+                                        Saved Cakes
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('customer.pets') }}">
+                                        My Pets
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    @endif
                 @endauth            
 
 

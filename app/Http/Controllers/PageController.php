@@ -25,10 +25,10 @@ class PageController extends Controller
             'products' => Product::query()
                 ->when(
                     $search !== '',
-                    fn(Builder $query): Builder => $query->whereLike('name', "%{$search}%")
+                    fn (Builder $query): Builder => $query->whereLike('name', "%{$search}%")
                 )
                 ->orderBy('name')
-                ->paginate(3)
+                ->paginate(6)
                 ->appends($search !== '' ? ['search' => $search] : []),
             'search' => $search,
         ]);
